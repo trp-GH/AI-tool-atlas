@@ -8,7 +8,7 @@ Everything (search, trending tools, categories, comparison table) runs in
 the browser against mock data baked into the page.
 
 This is the demo/pitch version. For the real product a database-backed
-app with a real search API, ranking algorithm, and a submission queue — see
+app with a real search API, ranking algorithm, and a submission queue see
 the separate `ai-tool-atlas` (Next.js + Postgres) project.
 
 ## What works here
@@ -16,7 +16,7 @@ the separate `ai-tool-atlas` (Next.js + Postgres) project.
 - Hero search with a simulated "AI reasoning" loading sequence
 - Keyword-based mock matching against 8 sample tools
 - Trending tools, category browser, ChatGPT vs Claude vs Gemini comparison
-- "Submit a tool" form — saves to `localStorage` only (not persisted anywhere else)
+- "Submit a tool" form saves to `localStorage` only (not persisted anywhere else)
 
 
 
