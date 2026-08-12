@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AIToolAtlas — Discover the right AI for any task</title>
+<meta name="description" content="Search any task, discover verified AI tools, and compare them side by side." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12172B; --panel:#1B2142; --panel-light:#242B52; --parchment:#F3EFE3;
+    --gold:#D4A24C; --gold-soft:#E8C98A; --teal:#4FBDBD; --slate:#8891B0;
+    --slate-light:#B9C0DA; --line:#2E3660;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{background:var(--ink); font-family:'Inter',sans-serif; color:var(--parchment); min-height:100vh;}
+  .display{font-family:'Fraunces',serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit; text-decoration:none;}
+  .container{max-width:1100px; margin:0 auto; padding:0 24px;}
+
+  /* header */
+  header{display:flex; align-items:center; justify-content:space-between; padding:20px 24px; border-bottom:1px solid var(--line);}
+  .logo{display:flex; align-items:center; gap:8px; font-size:19px; font-weight:600;}
+  .logo svg{color:var(--gold);}
+  nav{display:none; gap:28px; color:var(--slate-light); font-size:13.5px;}
+  @media(min-width:768px){ nav{display:flex;} }
+  .btn-gold{background:var(--gold); color:var(--ink); font-weight:600; padding:10px 16px; border-radius:8px; border:none; cursor:pointer; font-size:13px; display:inline-flex; align-items:center; gap:6px;}
+
+  /* hero */
+  .hero{max-width:720px; margin:0 auto; text-align:center; padding:64px 24px 24px;}
+  .eyebrow{color:var(--teal); font-size:12px; letter-spacing:.12em; text-transform:uppercase; margin-bottom:16px;}
+  .hero h1{font-size:44px; font-weight:600; line-height:1.15;}
+  .hero h1 em{color:var(--gold); font-style:italic;}
+  .hero p{color:var(--slate); font-size:15.5px; margin-top:18px; max-width:520px; margin-left:auto; margin-right:auto;}
+
+  .searchwrap{max-width:600px; margin:36px auto 0;}
+  .searchbox{display:flex; align-items:center; gap:12px; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px 16px;}
+  .searchbox input{flex:1; background:transparent; border:none; outline:none; color:var(--parchment); font-size:14.5px; font-family:inherit;}
+  .searchbox input::placeholder{color:var(--slate);}
+  .chips{display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:16px;}
+  .chip{border:1px solid var(--line); color:var(--slate-light); font-size:12.5px; padding:6px 12px; border-radius:999px; background:transparent; cursor:pointer;}
+  .chip:hover{border-color:var(--gold);}
+
+  .thinking{max-width:420px; margin:32px auto 0; text-align:left; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:20px; display:none;}
+  .step{display:flex; align-items:center; gap:10px; padding:6px 0; opacity:.3; font-size:13px; color:var(--slate);}
+  .step.active{opacity:1; color:var(--slate-light);}
+  .step .dot{width:15px; height:15px; border-radius:50%; border:1px solid var(--line); flex-shrink:0;}
+  .step.done .dot{background:var(--teal); border-color:var(--teal);}
+  .step.current .dot{background:var(--gold); border-color:var(--gold);}
+
+  .results{max-width:1100px; margin:48px auto 0; padding:0 24px; display:none;}
+  .results-meta{color:var(--slate); font-size:13.5px; margin-bottom:20px;}
+  .results-meta b{color:var(--gold); font-weight:500;}
+
+  /* sections */
+  section.block{max-width:1100px; margin:0 auto; padding:56px 24px;}
+  .section-head{display:flex; align-items:center; gap:8px; margin-bottom:24px;}
+  .section-head h2{font-size:22px; font-weight:600;}
+  .section-head svg{color:var(--gold);}
+
+  /* grid */
+  .grid{display:grid; grid-template-columns:1fr; gap:16px;}
+  @media(min-width:640px){ .grid.cols-2{grid-template-columns:repeat(2,1fr);} }
+  @media(min-width:1024px){ .grid.cols-4{grid-template-columns:repeat(4,1fr);} }
+
+  /* tool card */
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:20px; display:flex; flex-direction:column; gap:14px; transition:border-color .15s;}
+  .card:hover{border-color:rgba(212,162,76,.5);}
+  .badge{align-self:flex-start; background:var(--gold); color:var(--ink); font-size:10px; letter-spacing:.08em; text-transform:uppercase; padding:4px 10px; border-radius:999px; font-weight:600;}
+  .card-top{display:flex; align-items:flex-start; justify-content:space-between; gap:12px;}
+  .card-top h3{font-size:20px; font-weight:600;}
+  .card-top .cat{color:var(--slate); font-size:12px; margin-top:2px;}
+  .card p.desc{color:var(--slate-light); font-size:13.5px; line-height:1.5;}
+  .card-foot{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-top:auto; padding-top:12px; border-top:1px solid var(--line); font-size:12.5px;}
+  .rating{color:var(--gold-soft); display:flex; align-items:center; gap:4px;}
+  .price{color:var(--slate); font-size:12px;}
+  .verified{color:var(--teal); font-size:11.5px; display:flex; align-items:center; gap:4px; margin-left:auto;}
+
+  /* compass ring */
+  .ring{position:relative; flex-shrink:0;}
+  .ring svg{transform:rotate(-90deg);}
+  .ring .score{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-weight:600;}
+
+  /* categories */
+  .cat-card{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:20px;}
+  .cat-card h3{color:var(--gold-soft); font-size:16px; font-weight:600; margin-bottom:12px;}
+  .cat-card ul{list-style:none;}
+  .cat-card li{color:var(--slate-light); font-size:13px; padding:3px 0; display:flex; align-items:center; gap:8px;}
+  .cat-card li:before{content:''; width:4px; height:4px; border-radius:50%; background:var(--slate); flex-shrink:0;}
+
+  /* compare table */
+  table{width:100%; border-collapse:collapse; border-radius:10px; overflow:hidden;}
+  thead tr{background:var(--panel-light);}
+  th{text-align:left; padding:12px 16px; color:var(--slate); font-size:12px;}
+  th.center, td.center{text-align:center;}
+  td{padding:12px 16px; font-size:13px; color:var(--slate-light);}
+  tbody tr:nth-child(odd){background:var(--panel);}
+  tbody tr:nth-child(even){background:var(--ink);}
+  .yes{color:var(--teal);}
+
+  footer{display:flex; align-items:center; justify-content:space-between; padding:28px 24px; border-top:1px solid var(--line); max-width:1100px; margin:0 auto; color:var(--slate); font-size:12px;}
+  footer .flogo{display:flex; align-items:center; gap:8px;}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="#" class="logo">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+    <span class="display">AIToolAtlas</span>
+  </a>
+  <nav>
+    <a href="#search">Discover</a>
+    <a href="#categories">Categories</a>
+    <a href="#compare">Compare</a>
+    <a href="#submit">Submit a tool</a>
+  </nav>
+  <button class="btn-gold">Sign in</button>
+</header>
+
+<section class="hero">
+  <p class="eyebrow">The AI discovery engine</p>
+  <h1 class="display">Find the right AI<br/>for <em>anything.</em></h1>
+  <p>Describe what you're trying to do. We'll map it to the best verified AI tools — not just a keyword match.</p>
+
+  <div class="searchwrap" id="search">
+    <div class="searchbox">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8891B0" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input id="queryInput" type="text" placeholder="What do you want to accomplish?" />
+      <button class="btn-gold" onclick="runSearch()">Search
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="thinking" id="thinking"></div>
+  </div>
+</section>
+
+<div class="results" id="resultsWrap">
+  <p class="results-meta" id="resultsMeta"></p>
+  <div class="grid cols-2" id="resultsGrid"></div>
+</div>
+
+<section class="block">
+  <div class="section-head">
+    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+    <h2 class="display">Trending AI tools</h2>
+  </div>
+  <div class="grid cols-4" id="trendingGrid"></div>
+</section>
+
+<section class="block" id="categories">
+  <h2 class="display" style="font-size:22px; font-weight:600; margin-bottom:24px;">Browse by category</h2>
+  <div class="grid" style="grid-template-columns:1fr;" id="categoryGrid"></div>
+</section>
+
+<section class="block" id="compare">
+  <h2 class="display" style="font-size:22px; font-weight:600; margin-bottom:8px;">Compare: ChatGPT vs Claude vs Gemini</h2>
+  <p style="color:var(--slate); font-size:13px; margin-bottom:20px;">Generated from structured tool data, not written on the fly.</p>
+  <table>
+    <thead><tr><th class="mono">Feature</th><th>ChatGPT</th><th>Claude</th><th>Gemini</th></tr></thead>
+    <tbody id="compareBody"></tbody>
+  </table>
+</section>
+
+<section class="block" id="submit">
+  <h2 class="display" style="font-size:22px; font-weight:600; margin-bottom:8px;">Submit a tool</h2>
+  <p style="color:var(--slate); font-size:13px; margin-bottom:20px;">This demo stores submissions in your browser only (no backend). Wire this form to a real API/database to make it persistent.</p>
+  <div style="max-width:480px; display:flex; flex-direction:column; gap:12px;">
+    <input id="subName" placeholder="Tool name" style="padding:12px 14px; border-radius:8px; background:var(--panel); border:1px solid var(--line); color:var(--parchment); font-family:inherit; font-size:13px;">
+    <input id="subUrl" placeholder="Website URL" style="padding:12px 14px; border-radius:8px; background:var(--panel); border:1px solid var(--line); color:var(--parchment); font-family:inherit; font-size:13px;">
+    <textarea id="subDesc" placeholder="What does it do?" rows="4" style="padding:12px 14px; border-radius:8px; background:var(--panel); border:1px solid var(--line); color:var(--parchment); font-family:inherit; font-size:13px;"></textarea>
+    <button class="btn-gold" style="justify-content:center; padding:12px;" onclick="submitTool()">Submit for review</button>
+    <p id="subMsg" style="color:var(--teal); font-size:13px; display:none;">Thanks — saved locally for this demo.</p>
+  </div>
+</section>
+
+<footer>
+  <span class="flogo">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D4A24C" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+    AIToolAtlas — discover the right AI for any task.
+  </span>
+  <span>Static demo build — no backend required</span>
+</footer>
+
+<script>
+/* ---------- mock data (same catalog as the full-stack version) ---------- */
+const TOOLS = [
+  { name:"ChatGPT", cat:"Writing / Assistant", desc:"General-purpose AI assistant for writing, research, and reasoning.", price:"Free + $20/mo", free:true, rating:4.8, verified:"3d ago", scores:{relevance:96,feature:90,rating:96,price:80} },
+  { name:"Claude", cat:"Writing / Assistant", desc:"AI assistant built for careful reasoning, long documents, and coding.", price:"Free + $20/mo", free:true, rating:4.8, verified:"1d ago", scores:{relevance:95,feature:92,rating:96,price:80} },
+  { name:"Midjourney", cat:"Image Generation", desc:"High-fidelity AI image generation with a distinct artistic style.", price:"From $10/mo", free:false, rating:4.7, verified:"5d ago", scores:{relevance:91,feature:88,rating:94,price:65} },
+  { name:"ElevenLabs", cat:"Voice Generation", desc:"Realistic voice generation and cloning with multilingual support.", price:"Free + $5/mo", free:true, rating:4.6, verified:"2d ago", scores:{relevance:89,feature:93,rating:92,price:78} },
+  { name:"Runway", cat:"Text-to-Video", desc:"AI video generation and editing suite for creators and studios.", price:"Free + $12/mo", free:true, rating:4.4, verified:"6d ago", scores:{relevance:88,feature:85,rating:88,price:72} },
+  { name:"CapCut AI", cat:"Video Editing", desc:"No-code AI video editor with auto-captions and templates.", price:"Free", free:true, rating:4.5, verified:"4d ago", scores:{relevance:93,feature:80,rating:90,price:100} },
+  { name:"Gamma", cat:"Presentations", desc:"Turns outlines, docs, or reports into designed presentations.", price:"Free + $10/mo", free:true, rating:4.6, verified:"2d ago", scores:{relevance:94,feature:86,rating:92,price:82} },
+  { name:"Notion AI", cat:"Business / Docs", desc:"Writing and knowledge-base assistant built into Notion.", price:"$10/mo add-on", free:false, rating:4.5, verified:"5d ago", scores:{relevance:85,feature:82,rating:90,price:70} },
+];
+
+const CATEGORIES = [
+  { name:"Writing", items:["Copywriting","Grammar","Summarization","Paraphrasing"] },
+  { name:"Image", items:["Image Generation","Image Editing","Background Removal","Upscaling"] },
+  { name:"Video", items:["Text-to-Video","Video Editing","Avatar","Video Translation"] },
+  { name:"Audio", items:["Voice Generation","Voice Cloning","Music","Transcription"] },
+  { name:"Business", items:["CRM","Marketing","Sales","Analytics"] },
+  { name:"Code", items:["Autocomplete","Code Review","Testing","Documentation"] },
+];
+
+const CHIPS = ["Free AI to edit YouTube videos","Turn reports into presentations","AI voice cloning for a podcast","No-code product image generator"];
+const REASONING_STEPS = ["Understanding your request…","Extracting task, budget, and skill level…","Matching against verified tool database…","Scoring relevance, pricing, and reliability…"];
+const LABELS = ["Best overall","Best free option","Best for beginners","Best professional option"];
+
+function overallScore(s){ return Math.round(s.relevance*0.4 + s.feature*0.25 + s.rating*0.2 + s.price*0.15); }
+
+function ringSVG(score, size){
+  const r=(size-8)/2, c=2*Math.PI*r, offset=c-(score/100)*c;
+  return `<div class="ring" style="width:${size}px;height:${size}px;">
+    <svg width="${size}" height="${size}">
+      <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--line)" stroke-width="4"/>
+      <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--gold)" stroke-width="4" stroke-linecap="round"
+        stroke-dasharray="${c}" stroke-dashoffset="${offset}" style="transition:stroke-dashoffset 1s ease;"/>
+    </svg>
+    <div class="score mono" style="font-size:${size*0.24}px;">${score}</div>
+  </div>`;
+}
+
+function cardHTML(tool, badge){
+  const score = overallScore(tool.scores);
+  return `<div class="card">
+    ${badge ? `<span class="badge mono">${badge}</span>` : ""}
+    <div class="card-top">
+      <div>
+        <h3 class="display">${tool.name}</h3>
+        <p class="cat">${tool.cat}</p>
+      </div>
+      ${ringSVG(score, 56)}
+    </div>
+    <p class="desc">${tool.desc}</p>
+    <div class="card-foot">
+      <span class="rating">★ ${tool.rating}</span>
+      <span class="price mono">${tool.price}</span>
+      <span class="verified">✓ verified ${tool.verified}</span>
+    </div>
+  </div>`;
+}
+
+function pickResultsFor(query){
+  const q = query.toLowerCase();
+  let pool = TOOLS;
+  const byNames = names => TOOLS.filter(t=>names.includes(t.name)).concat(TOOLS.filter(t=>!names.includes(t.name)));
+  if(/video|present|slide|report/.test(q)) pool = byNames(["Runway","CapCut AI","Gamma"]);
+  else if(/voice|audio|podcast|speak/.test(q)) pool = byNames(["ElevenLabs"]);
+  else if(/image|photo|picture|art/.test(q)) pool = byNames(["Midjourney"]);
+  else if(/write|essay|doc|note/.test(q)) pool = byNames(["ChatGPT","Claude","Notion AI"]);
+  return pool.slice(0,4);
+}
+
+let timers = [];
+function runSearch(qOverride){
+  const input = document.getElementById('queryInput');
+  const query = (qOverride ?? input.value).trim();
+  if(!query) return;
+  input.value = query;
+  timers.forEach(clearTimeout); timers = [];
+
+  const thinking = document.getElementById('thinking');
+  const resultsWrap = document.getElementById('resultsWrap');
+  resultsWrap.style.display = 'none';
+  thinking.style.display = 'block';
+  thinking.innerHTML = REASONING_STEPS.map((s,i)=>`<div class="step" data-i="${i}"><div class="dot"></div><span>${s}</span></div>`).join('');
+
+  REASONING_STEPS.forEach((_, i)=>{
+    timers.push(setTimeout(()=>{
+      document.querySelectorAll('.step').forEach(el=>{
+        const idx = Number(el.dataset.i);
+        el.classList.toggle('done', idx < i);
+        el.classList.toggle('current', idx === i);
+      });
+    }, i*480));
+  });
+
+  timers.push(setTimeout(()=>{
+    thinking.style.display = 'none';
+    const results = pickResultsFor(query);
+    document.getElementById('resultsMeta').innerHTML = `Found <b>${TOOLS.length+24}</b> tools. Top matches for <b>"${query}"</b>:`;
+    document.getElementById('resultsGrid').innerHTML = results.map((t,i)=>cardHTML(t, LABELS[i])).join('');
+    resultsWrap.style.display = 'block';
+    resultsWrap.scrollIntoView({behavior:'smooth', block:'start'});
+  }, REASONING_STEPS.length*480 + 300));
+}
+
+/* ---------- render static sections ---------- */
+document.getElementById('chips').innerHTML = CHIPS.map(c=>`<button class="chip" onclick="runSearch('${c.replace(/'/g,"\\'")}')">${c}</button>`).join('');
+document.getElementById('trendingGrid').innerHTML = TOOLS.slice(0,4).map(t=>cardHTML(t)).join('');
+document.getElementById('categoryGrid').innerHTML = `<div class="grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;">` +
+  CATEGORIES.map(cat=>`<div class="cat-card"><h3 class="display">${cat.name}</h3><ul>${cat.items.map(i=>`<li>${i}</li>`).join('')}</ul></div>`).join('') + `</div>`;
+
+const COMPARE_ROWS = [
+  ["Free plan","✓","✓","✓"], ["API access","✓","✓","✓"], ["Image generation","✓","—","✓"],
+  ["Long context","✓","✓","✓"], ["Coding","✓","✓","✓"],
+];
+document.getElementById('compareBody').innerHTML = COMPARE_ROWS.map(([f,a,b,c])=>
+  `<tr><td class="mono">${f}</td><td class="center yes">${a}</td><td class="center yes">${b}</td><td class="center yes">${c}</td></tr>`
+).join('');
+
+document.getElementById('queryInput').addEventListener('keydown', e=>{ if(e.key==='Enter') runSearch(); });
+
+function submitTool(){
+  const name = document.getElementById('subName').value.trim();
+  const url = document.getElementById('subUrl').value.trim();
+  const desc = document.getElementById('subDesc').value.trim();
+  if(!name || !url || !desc) return;
+  const key = 'aitoolatlas_submissions';
+  const existing = JSON.parse(localStorage.getItem(key) || '[]');
+  existing.push({ name, url, desc, at: new Date().toISOString() });
+  localStorage.setItem(key, JSON.stringify(existing));
+  document.getElementById('subName').value = '';
+  document.getElementById('subUrl').value = '';
+  document.getElementById('subDesc').value = '';
+  document.getElementById('subMsg').style.display = 'block';
+}
+</script>
+</body>
+</html>
