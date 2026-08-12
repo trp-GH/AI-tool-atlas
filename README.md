@@ -1,13 +1,13 @@
-# AIToolAtlas — Static Demo
+# AIToolAtlas-Static Demo
 
 > Discover the right AI for any task.
 
-This is a **single-file static demo** of AIToolAtlas — pure HTML, CSS, and
+This is a **single-file static demo** of AIToolAtlas-pure HTML, CSS, and
 vanilla JavaScript. No build step, no npm install, no database, no server.
 Everything (search, trending tools, categories, comparison table) runs in
 the browser against mock data baked into the page.
 
-This is the demo/pitch version. For the real product — a database-backed
+This is the demo/pitch version. For the real product a database-backed
 app with a real search API, ranking algorithm, and a submission queue — see
 the separate `ai-tool-atlas` (Next.js + Postgres) project.
 
